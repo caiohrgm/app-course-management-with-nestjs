@@ -1,0 +1,10 @@
+services:
+  acm-dev-database:  
+    container_name: acm-dev-db-cont
+    image: postgres:latest
+    ports: 
+      - 5434:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: acm-dev-db
