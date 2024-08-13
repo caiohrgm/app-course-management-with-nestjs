@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreateUserDto {
+export class UpdateUserDto {
   @IsString()
   @IsOptional() // From class-validator package
   fullName: string;
@@ -8,8 +8,4 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty() // From class-validator package
   email: string;
-
-  @IsString()
-  @IsNotEmpty() // From class-validator package
-  hashedPassword: string;
 }
