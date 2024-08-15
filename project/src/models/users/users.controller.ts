@@ -1,48 +1,48 @@
 import {
   Controller,
   Get,
-  Post,
-  Patch,
-  Delete,
   Body,
+  Patch,
   Param,
+  Delete,
+  ClassSerializerInterceptor,
+  UseInterceptors,
+  UseGuards,
   HttpCode,
 } from '@nestjs/common';
-// import { CreateUserDto } from './dto/create-user.dto';
+
 import { UsersService } from './users.service';
-// import { User } from './interfaces/user.interface';
+import { UserEntity } from './entities/user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../../authentication/guard/jwt.guard';
 
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  // @Post()
-  // @HttpCode(201)
-  // async create(@Body() createUserDto: CreateUserDto) {
-  //   this.usersService.create(createUserDto);
-  // }
+  @Get()
+  @HttpCode(200)
+  async findAll(): Promise<UserEntity[]> {
+    return this.usersService.findAll();
+  }
 
-  // @Get()
-  // @HttpCode(200)
-  // async findAll(): Promise<User[]> {
-  //   return this.usersService.findAll();
-  // }
+  @Get(':uuid')
+  @HttpCode(200)
+  findOne(@Param('uuid') id: string) {
+    return this.usersService.findOneById(id);
+  }
 
-  // @Get(':uuid')
-  // @HttpCode(200)
-  // findOne(@Param('uuid') uuid: string) {
-  //   return 'this action return a specific user';
-  // }
+  @Patch(':uuid')
+  @HttpCode(204)
+  update(@Param('uuid') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
+  }
 
-  // @Patch(':uuid')
-  // @HttpCode(202)
-  // update(@Param('uuid') uuid: string) {
-  //   return 'this action updates a specific user';
-  // }
-
-  // @Delete(':uuid')
-  // @HttpCode(204)
-  // remove(@Param('uuid') uuid: string) {
-  //   return 'this action removes a specific user';
-  // }
+  @Delete(':uuid')
+  @HttpCode(204)
+  remove(@Param('uuid') id: string) {
+    return this.usersService.findOneById(id);
+  }
 }

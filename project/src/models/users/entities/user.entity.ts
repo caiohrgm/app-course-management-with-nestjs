@@ -1,7 +1,7 @@
 import { Exclude } from 'class-transformer';
 
 export class UserEntity {
-  uuid: string;
+  id: string;
   fullName: string;
   email: string;
   createdAt: Date;

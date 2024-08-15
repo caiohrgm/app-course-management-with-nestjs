@@ -11,5 +11,5 @@ export class SignInAuthDto {
   @MaxLength(12)
   @IsNotEmpty()
   // @ApiProperty()
-  hash: string;
+  password: string;
 }

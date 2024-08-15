@@ -1,11 +1,12 @@
-/* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-// import { AuthProvider } from '@prisma/client';
 import { HashService } from './hash/hash.service';
 import { UsersService } from 'src/models/users/users.service';
+import { JwtService } from '@nestjs/jwt';
 import { SignUpAuthDto } from './dto/singnup-auth.dto';
-// import { SignInAuthDto } from './dto/signin-auth.dto';
+import { SignInAuthDto } from './dto/signin-auth.dto';
+import { UserEntity } from 'src/models/users/entities/user.entity';
+import { EnvProps } from '../config/env';
 
 @Injectable()
 export class AuthenticationService {
@@ -13,6 +14,7 @@ export class AuthenticationService {
     private readonly usersService: UsersService,
     private readonly hashService: HashService,
     private readonly config: ConfigService,
+    private readonly jwt: JwtService,
   ) {}
 
   async signUpWithEmail({ fullName, email, password }: SignUpAuthDto) {
@@ -27,32 +29,40 @@ export class AuthenticationService {
     return user;
   }
 
-  // async signInWithEmail({ email, password }: SignInAuthDto) {
-  //   const user = await this._validateUser(email, password, AuthProvider.LOCAL);
-  //   const accessToken = await this._generateAccessToken(user);
-  //   return { accessToken};
-  // }
+  async signInWithEmail({ email, password }: SignInAuthDto): Promise<any> {
+    // const user = await this._validateUser(email, password, AuthProvider.LOCAL);
+    const user = await this._validateUser(email, password);
+    const accessToken = await this._generateAccessToken(user);
 
-  // async _validateUser(email: string, password: string, provider: AuthProvider) {
-  //   const user = await this.usersService.findBy(email, provider);
+    return { accessToken };
+  }
 
-  //   if (!user || !this.hashService.verify(user.hash, password)) {
-  //     throw new UnauthorizedException();
-  //   }
+  private async _validateUser(
+    email: string,
+    password: string,
+    // provider: AuthProvider,
+  ) {
+    const user = await this.usersService.findOneByEmail(email);
 
-  //   return new UserEntity(user);
-  // }
+    if (!user || !this.hashService.verify(password, user.hashedPassword)) {
+      throw new UnauthorizedException();
+    }
 
-  // async _generateAccessToken(user: UserEntity) {
-  //   const payload = { uuid: user.uuid, email: user.email };
-  //   const secret = this.config.get(EnvProps.JWT_SECRET_ACCESS_TOKEN);
-  //   const expiresIn = '24h';
+    return new UserEntity(user);
+  }
 
-  //   const accessToken = await this.jwt.signAsync(payload, {
-  //     secret,
-  //     expiresIn,
-  //   });
+  async _generateAccessToken(user: UserEntity) {
+    const payload = { id: user.id, email: user.email };
 
-  //   return accessToken;
-  // }
+    const secret = this.config.get(EnvProps.JWT_SECRET_ACCESS_TOKEN);
+
+    const expiresIn = '24h';
+
+    const accessToken = await this.jwt.signAsync(payload, {
+      secret,
+      expiresIn,
+    });
+
+    return accessToken;
+  }
 }

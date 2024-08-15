@@ -8,7 +8,7 @@ export class HashService {
     return argon.hash(password);
   }
 
-  verify(hash: string, password: string): Promise<boolean> {
-    return argon.verify(hash, password);
+  verify(password: string, hashedPassword: string): Promise<boolean> {
+    return argon.verify(hashedPassword, password);
   }
 }

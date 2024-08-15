@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Controller, Post, HttpCode, Body } from '@nestjs/common';
 import { SignUpAuthDto } from './dto/singnup-auth.dto';
-// import { SignInAuthDto } from './dto/signin-auth.dto';
+import { SignInAuthDto } from './dto/signin-auth.dto';
 import { AuthenticationService } from './authentication.service';
 
 @Controller('authentication')
@@ -9,7 +9,7 @@ export class AuthenticationController {
   constructor(private readonly authService: AuthenticationService) {}
 
   @Post('/signup')
-  @HttpCode(202)
+  @HttpCode(201)
   signUpWithEmail(
     @Body()
     signUpAuthDto: SignUpAuthDto,
@@ -17,8 +17,9 @@ export class AuthenticationController {
     return this.authService.signUpWithEmail(signUpAuthDto);
   }
 
-  // @Post('signin')
-  // signInWithEmail(@Body() signInAuthDto: SignInAuthDto) {
-  //   return this.authService.signInWithEmail(signInAuthDto);
-  // }
+  @Post('signin')
+  @HttpCode(201)
+  signInWithEmail(@Body() signInAuthDto: SignInAuthDto) {
+    return this.authService.signInWithEmail(signInAuthDto);
+  }
 }
