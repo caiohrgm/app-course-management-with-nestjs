@@ -20,4 +20,53 @@ model User {
   hashedPassword String @unique // This field is mandatory
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+  classes UserClass[]
+  courses UserCourse[]
+
+  @@map("user")
 }
+
+model Class {
+  id String             @id @default(uuid())
+  className String      @unique
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  UserClass UserClass[]
+
+  @@map("class")
+}
+
+model Course {
+  id String             @id @default(uuid())
+  courseName String     @unique
+  workload Int          
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  UserCourse UserCourse[]
+
+  @@map("course")
+}
+
+model UserClass {
+  id String             @id @default(uuid())
+  student User          @relation(fields:[studentID], references:[id])
+  studentID String
+  class Class           @relation(fields:[classID], references:[id])
+  classID String        
+  assignedAt DateTime   @default(now())
+
+  @@map("user-class")  // Used to define a name for this table
+}
+
+model UserCourse {
+  id String             @id @default(uuid())
+  student User          @relation(fields:[studentID], references:[id])
+  studentID String
+  course Course           @relation(fields:[courseID], references:[id])
+  courseID String        
+  assignedAt DateTime   @default(now())
+  
+  @@map("user-course")  // Used to define a name for this table
+}
+
+

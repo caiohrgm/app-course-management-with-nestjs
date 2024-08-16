@@ -7,12 +7,15 @@ import {
 
 import { ValidationPipe } from '@nestjs/common';
 import * as passport from 'passport';
+import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
     new ExpressAdapter(),
   );
+
+  app.useGlobalFilters(new HttpExceptionFilter());
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
   app.use(passport.initialize());

@@ -42,7 +42,7 @@ export class AuthenticationService {
     password: string,
     // provider: AuthProvider,
   ) {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findByEmail(email);
 
     if (!user || !this.hashService.verify(password, user.hashedPassword)) {
       throw new UnauthorizedException();

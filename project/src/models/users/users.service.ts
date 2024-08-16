@@ -1,5 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { User } from './user.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/common/prisma/prisma.service';
 import { UserEntity } from './entities/user.entity';
@@ -22,19 +26,19 @@ export class UsersService {
     return users.map((user) => new UserEntity(user));
   }
 
-  async findOneById(id: string): Promise<UserEntity | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-    });
-
-    console.log(user);
-    return user ? new UserEntity(user) : null;
+  async findById(uuid: string): Promise<UserEntity | null> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { id: uuid },
+      });
+      return user ? new UserEntity(user) : null;
+    } catch {
+      throw new NotFoundException('No user in the database.');
+    }
   }
 
-  async findOneByEmail(email: string): Promise<UserEntity | null> {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
     return user ? new UserEntity(user) : null;
   }
 
@@ -44,5 +48,17 @@ export class UsersService {
       data,
     });
     return new UserEntity(user);
+  }
+
+  async deleteById(id: string) {
+    await this.prisma.user.delete({
+      where: { id },
+    });
+  }
+
+  async deleteByEmail(email: string) {
+    await this.prisma.user.delete({
+      where: { email },
+    });
   }
 }
