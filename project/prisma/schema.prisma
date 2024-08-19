@@ -26,23 +26,26 @@ model User {
   @@map("user")
 }
 
-model Class {
+model ClassGroup {
   id String             @id @default(uuid())
+  course Course         @relation(fields:[courseName], references:[courseName])
+  courseName String
   className String      @unique
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   UserClass UserClass[]
 
-  @@map("class")
+  @@map("class_group")
 }
 
 model Course {
   id String             @id @default(uuid())
-  courseName String     @unique
+  courseName String           @unique
   workload Int          
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   UserCourse UserCourse[]
+  Class ClassGroup[]
 
   @@map("course")
 }
@@ -51,7 +54,7 @@ model UserClass {
   id String             @id @default(uuid())
   student User          @relation(fields:[studentID], references:[id])
   studentID String
-  class Class           @relation(fields:[classID], references:[id])
+  class ClassGroup           @relation(fields:[classID], references:[id])
   classID String        
   assignedAt DateTime   @default(now())
 

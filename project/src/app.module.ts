@@ -8,12 +8,14 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { PassportModule } from '@nestjs/passport';
 import { CourseModule } from './models/course/course.module';
+import { ClassGroupModule } from './models/class-group/class-group.module';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     UsersModule,
     CourseModule,
+    ClassGroupModule,
     AuthenticationModule,
     ConfigModule.forRoot({
       isGlobal: true,

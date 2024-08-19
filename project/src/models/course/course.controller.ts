@@ -17,9 +17,7 @@ import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
 import { JwtAuthGuard } from '../../authentication/guard/jwt.guard';
-import { AnyCatcher } from 'rxjs/internal/AnyCatcher';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { CourseEntity } from './entities/course.entity';
 
 @Controller('course')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -41,14 +39,14 @@ export class CourseController {
     return this.courseService.findAll();
   }
 
-  @Get(':param')
+  @Get(':params')
   @HttpCode(200)
   @UseFilters(new HttpExceptionFilter())
   findOne(@Param() params: any) {
     const param = params.param;
-
     const tokens: string[] = param.split('-');
     const sizes: number[] = [];
+
     tokens.forEach((value) => {
       sizes.push(value.length);
     });
