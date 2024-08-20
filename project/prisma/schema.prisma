@@ -14,62 +14,37 @@ datasource db {
 }
 
 model User {
-  id String             @id @default(uuid())
-  fullName String
-  email String          @unique // This field is mandatory
-  hashedPassword String @unique // This field is mandatory
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  classes UserClass[]
-  courses UserCourse[]
+  id             String      @id @default(uuid())
+  fullName       String
+  email          String      @unique // This field is mandatory
+  hashedPassword String      @unique // This field is mandatory
+  classGroupId   String?
+  classGroup     ClassGroup? @relation(fields: [classGroupId], references: [id]) // refers to one class
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 
   @@map("user")
 }
 
 model ClassGroup {
-  id String             @id @default(uuid())
-  course Course         @relation(fields:[courseName], references:[courseName])
-  courseName String
-  className String      @unique
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  UserClass UserClass[]
+  id        String   @id @default(uuid())
+  className String   @unique
+  courseId  String?
+  course    Course?  @relation(fields: [courseId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User[] // Relates to multiple users
 
   @@map("class_group")
 }
 
 model Course {
-  id String             @id @default(uuid())
-  courseName String           @unique
-  workload Int          
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  UserCourse UserCourse[]
-  Class ClassGroup[]
+  id         String       @id @default(uuid())
+  courseName String       @unique
+  workload   Int
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  ClassGroup ClassGroup[]
 
   @@map("course")
 }
-
-model UserClass {
-  id String             @id @default(uuid())
-  student User          @relation(fields:[studentID], references:[id])
-  studentID String
-  class ClassGroup           @relation(fields:[classID], references:[id])
-  classID String        
-  assignedAt DateTime   @default(now())
-
-  @@map("user-class")  // Used to define a name for this table
-}
-
-model UserCourse {
-  id String             @id @default(uuid())
-  student User          @relation(fields:[studentID], references:[id])
-  studentID String
-  course Course           @relation(fields:[courseID], references:[id])
-  courseID String        
-  assignedAt DateTime   @default(now())
-  
-  @@map("user-course")  // Used to define a name for this table
-}
-
-

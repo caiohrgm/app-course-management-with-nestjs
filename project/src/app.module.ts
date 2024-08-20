@@ -9,6 +9,8 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { PassportModule } from '@nestjs/passport';
 import { CourseModule } from './models/course/course.module';
 import { ClassGroupModule } from './models/class-group/class-group.module';
+import { CourseController } from './models/course/course.controller';
+import { ClassGroupController } from './models/class-group/class-group.controller';
 
 @Module({
   imports: [
@@ -27,5 +29,7 @@ import { ClassGroupModule } from './models/class-group/class-group.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes(UsersController);
+    consumer.apply(LoggerMiddleware).forRoutes(CourseController);
+    consumer.apply(LoggerMiddleware).forRoutes(ClassGroupController);
   }
 }

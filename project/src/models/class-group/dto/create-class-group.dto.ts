@@ -2,10 +2,9 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateClassGroupDto {
   @IsString()
-  @IsOptional()
-  courseName: string;
+  className: string;
 
   @IsString()
-  @IsNotEmpty()
-  className: string;
+  @IsOptional()
+  courseId: string;
 }

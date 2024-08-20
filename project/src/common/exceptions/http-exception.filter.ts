@@ -27,7 +27,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       name: name,
-      message: message,
+      cause: cause,
     });
 
     // if (cause instanceof Object && cause.hasOwnProperty('message')) {

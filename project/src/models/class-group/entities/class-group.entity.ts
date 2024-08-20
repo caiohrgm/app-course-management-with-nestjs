@@ -1,7 +1,7 @@
 export class ClassGroupEntity {
   id: string;
-  courseName: string;
   className: string;
+  courseId: string;
   createdAt: Date;
   updatedAt: Date;
 

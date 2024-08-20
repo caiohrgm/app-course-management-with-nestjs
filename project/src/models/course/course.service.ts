@@ -35,7 +35,10 @@ export class CourseService {
   }
 
   async update(id: string, data: UpdateCourseDto): Promise<CourseEntity> {
-    const course = await this.prisma.course.update({ where: { id }, data });
+    const course = await this.prisma.course.update({
+      where: { id },
+      data,
+    });
     return new CourseEntity(course);
   }
 
