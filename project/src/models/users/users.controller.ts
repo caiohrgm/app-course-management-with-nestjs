@@ -10,7 +10,6 @@ import {
   UseGuards,
   HttpCode,
   UseFilters,
-  HttpException,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -18,8 +17,11 @@ import { UserEntity } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../../authentication/guard/jwt.guard';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('users')
+@ApiBearerAuth('jwt')
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
 export class UsersController {
@@ -45,26 +47,20 @@ export class UsersController {
     }
   }
 
-  @Patch(':uuid')
+  @Patch(':id')
   @HttpCode(202)
   @UseFilters(new HttpExceptionFilter())
   update(
-    @Param('uuid') id: string,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':param')
+  @Delete(':id')
   @HttpCode(204)
   @UseFilters(new HttpExceptionFilter())
-  remove(@Param() params: any) {
-    const param = params.param;
-
-    if (param.includes('@')) {
-      return this.usersService.deleteByEmail(param);
-    } else {
-      return this.usersService.deleteById(param);
-    }
+  remove(@Param('id') id: any) {
+    return this.usersService.deleteById(id);
   }
 }

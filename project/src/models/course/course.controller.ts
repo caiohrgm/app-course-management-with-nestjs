@@ -18,8 +18,11 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
 import { JwtAuthGuard } from '../../authentication/guard/jwt.guard';
 import { UpdateCourseDto } from './dto/update-course.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('course')
+@ApiTags('course')
+@ApiBearerAuth('jwt')
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard)
 export class CourseController {
@@ -39,11 +42,10 @@ export class CourseController {
     return this.courseService.findAll();
   }
 
-  @Get(':params')
+  @Get(':param')
   @HttpCode(200)
   @UseFilters(new HttpExceptionFilter())
-  findOne(@Param() params: any) {
-    const param = params.param;
+  findOne(@Param('param') param: any) {
     const tokens: string[] = param.split('-');
     const sizes: number[] = [];
 
@@ -66,14 +68,18 @@ export class CourseController {
   @Patch(':id')
   @HttpCode(202)
   @UseFilters(new HttpExceptionFilter())
-  update(@Param() id: string, @Body() updateUserData: UpdateCourseDto) {
+  update(@Param('id') id: string, @Body() updateUserData: UpdateCourseDto) {
     return this.courseService.update(id, updateUserData);
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  // @HttpCode(204)
   @UseFilters(new HttpExceptionFilter())
-  remove(@Param() id: string) {
+  remove(@Param('id') id: string) {
     return this.courseService.remove(id);
   }
 }
+
+
+//COmo trablahar com perfil de usuarios usando nestjs? query pon ChaGPT to search for user profile config;
+// Pesquisar sobre papeis de usuario: termo RBAC (role-based access control) ou então ABAC(attribute-based access control);
