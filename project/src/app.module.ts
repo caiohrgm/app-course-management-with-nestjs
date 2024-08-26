@@ -6,13 +6,15 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { PassportModule } from '@nestjs/passport';
 import { CourseModule } from './models/course/course.module';
 import { ClassGroupModule } from './models/class-group/class-group.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/exceptions/all-exceptions.filter';
 import { PrismaClientExceptionFilter } from './common/exceptions/prisma-exceptions/prisma-exception.filter';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 import { CourseController } from './models/course/course.controller';
 import { UsersController } from './models/users/users.controller';
 import { ClassGroupController } from './models/class-group/class-group.controller';
+import { RolesGuard } from './authentication/guard/roles.guard';
+import { PrismaService } from './common/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -25,7 +27,13 @@ import { ClassGroupController } from './models/class-group/class-group.controlle
       isGlobal: true,
     }),
   ],
-  providers: [],
+  providers: [
+    PrismaService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

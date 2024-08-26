@@ -9,7 +9,9 @@ export class UserEntity {
 
   @Exclude()
   hashedPassword: string;
-
+  
+  roles: string[];
+  
   constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);
   }

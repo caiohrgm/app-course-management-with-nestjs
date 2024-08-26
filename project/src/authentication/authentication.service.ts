@@ -15,15 +15,16 @@ export class AuthenticationService {
     private readonly hashService: HashService,
     private readonly config: ConfigService,
     private readonly jwt: JwtService,
-  ) {}
+  ) { }
 
-  async signUpWithEmail({ fullName, email, password }: SignUpAuthDto) {
+  async signUpWithEmail({ fullName, email, password, roles }: SignUpAuthDto) {
     const hashedPassword = await this.hashService.create(password);
 
     const user = await this.usersService.create({
       fullName,
       email,
       hashedPassword,
+      roles,
     });
 
     return user;

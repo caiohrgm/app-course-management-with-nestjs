@@ -1,5 +1,6 @@
 import {
   Controller,
+  Request,
   Get,
   Body,
   Patch,
@@ -15,9 +16,11 @@ import {
 import { UsersService } from './users.service';
 import { UserEntity } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from '../../authentication/guard/jwt.guard';
+import { JwtAuthGuard } from '../../authentication/guard/jwt-auth.guard';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Role } from 'src/common/enums/roles.enum';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('users')
 @ApiTags('users')
@@ -28,6 +31,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
+  @Roles(Role.ADMIN)
   @HttpCode(200)
   @UseFilters(new HttpExceptionFilter())
   findAll(): Promise<UserEntity[]> {
@@ -35,6 +39,7 @@ export class UsersController {
   }
 
   @Get(':param')
+  @Roles(Role.ADMIN)
   @HttpCode(200)
   @UseFilters(HttpExceptionFilter)
   findOne(@Param() params: any) {
@@ -48,6 +53,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @Roles(Role.STUDENT, Role.ADMIN)
   @HttpCode(202)
   @UseFilters(new HttpExceptionFilter())
   update(
@@ -58,6 +64,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @Roles(Role.STUDENT, Role.ADMIN)
   @HttpCode(204)
   @UseFilters(new HttpExceptionFilter())
   remove(@Param('id') id: any) {

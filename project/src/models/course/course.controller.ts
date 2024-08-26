@@ -16,7 +16,7 @@ import {
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { JwtAuthGuard } from '../../authentication/guard/jwt.guard';
+import { JwtAuthGuard } from '../../authentication/guard/jwt-auth.guard';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 

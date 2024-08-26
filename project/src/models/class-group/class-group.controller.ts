@@ -17,7 +17,7 @@ import { ClassGroupService } from './class-group.service';
 import { CreateClassGroupDto } from './dto/create-class-group.dto';
 import { UpdateClassGroupDto } from './dto/update-class-group.dto';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { JwtAuthGuard } from 'src/authentication/guard/jwt.guard';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Controller('class-group')
