@@ -80,6 +80,5 @@ export class CourseController {
   }
 }
 
-
 //COmo trablahar com perfil de usuarios usando nestjs? query pon ChaGPT to search for user profile config;
 // Pesquisar sobre papeis de usuario: termo RBAC (role-based access control) ou então ABAC(attribute-based access control);

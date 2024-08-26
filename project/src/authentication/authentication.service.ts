@@ -37,11 +37,7 @@ export class AuthenticationService {
     return { accessToken };
   }
 
-  private async _validateUser(
-    email: string,
-    password: string,
-    // provider: AuthProvider,
-  ) {
+  private async _validateUser(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
 
     if (!user || !this.hashService.verify(password, user.hashedPassword)) {
