@@ -2,20 +2,17 @@
 import { Controller, Post, HttpCode, Body } from '@nestjs/common';
 import { SignUpAuthDto } from './dto/singnup-auth.dto';
 import { SignInAuthDto } from './dto/signin-auth.dto';
-import { AuthenticationService } from './authentication.service';
+import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 
-@Controller('authentication')
-@ApiTags('authentication')
-export class AuthenticationController {
-  constructor(private readonly authService: AuthenticationService) { }
+@Controller('auth')
+@ApiTags('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
   @HttpCode(201)
-  signUpWithEmail(
-    @Body()
-    signUpAuthDto: SignUpAuthDto,
-  ) {
+  signUpWithEmail(@Body() signUpAuthDto: SignUpAuthDto) {
     return this.authService.signUpWithEmail(signUpAuthDto);
   }
 

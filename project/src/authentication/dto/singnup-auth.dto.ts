@@ -1,4 +1,3 @@
-// import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import {
   IsEmail,
@@ -13,21 +12,20 @@ import {
 export class SignUpAuthDto {
   @IsString()
   @IsNotEmpty()
-  // @ApiProperty()
   fullName: string;
 
   @IsEmail()
   @IsNotEmpty()
-  // @ApiProperty()
   email: string;
 
   @MinLength(8)
   @MaxLength(12)
   @IsNotEmpty()
-  // @ApiProperty()
   password: string;
-
-  @IsEnum(Role)
+  // This option is used to indicate that the property being validated
+  // is an array, and each element within that array should be validated
+  // against the enum.
+  @IsEnum(Role, { each: true })
   @IsOptional()
   roles: Role[];
 }

@@ -1,6 +1,5 @@
 import {
   Controller,
-  Request,
   Get,
   Body,
   Patch,
@@ -8,38 +7,41 @@ import {
   Delete,
   ClassSerializerInterceptor,
   UseInterceptors,
-  UseGuards,
   HttpCode,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { UserEntity } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from '../../authentication/guard/jwt-auth.guard';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Role } from 'src/common/enums/roles.enum';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from '@prisma/client';
+import { JwtAuthGuard } from 'src/authentication/guard/jwt-auth.guard';
+import { AuthGuard } from '../../authentication/guard/auth.guard';
+import { RolesGuard } from 'src/authentication/guard/roles.guard';
 
 @Controller('users')
 @ApiTags('users')
 @ApiBearerAuth('jwt')
 @UseInterceptors(ClassSerializerInterceptor)
-@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  @Roles(Role.ADMIN)
+  // @Roles(Role.ADMIN)
   @HttpCode(200)
   @UseFilters(new HttpExceptionFilter())
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthGuard)
   findAll(): Promise<UserEntity[]> {
     return this.usersService.findAll();
   }
 
   @Get(':param')
-  @Roles(Role.ADMIN)
+  // @Roles(Role.ADMIN)
   @HttpCode(200)
   @UseFilters(HttpExceptionFilter)
   findOne(@Param() params: any) {
@@ -53,9 +55,10 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @Roles(Role.STUDENT, Role.ADMIN)
+  // @Roles(Role.STUDENT)
   @HttpCode(202)
   @UseFilters(new HttpExceptionFilter())
+  @UseGuards(AuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -64,7 +67,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @Roles(Role.STUDENT, Role.ADMIN)
+  @Roles(Role.STUDENT)
   @HttpCode(204)
   @UseFilters(new HttpExceptionFilter())
   remove(@Param('id') id: any) {

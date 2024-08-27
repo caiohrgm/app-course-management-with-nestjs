@@ -29,6 +29,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  // app.useGlobalGuards(new JwtAuthGuard());
 
   app.setGlobalPrefix('api');
 

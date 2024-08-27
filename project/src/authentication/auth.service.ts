@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HashService } from './hash/hash.service';
 import { UsersService } from 'src/models/users/users.service';
@@ -9,17 +13,22 @@ import { UserEntity } from 'src/models/users/entities/user.entity';
 import { EnvProps } from '../config/env';
 
 @Injectable()
-export class AuthenticationService {
+export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly hashService: HashService,
     private readonly config: ConfigService,
-    private readonly jwt: JwtService,
-  ) { }
+    private readonly jwtService: JwtService,
+  ) {}
 
   async signUpWithEmail({ fullName, email, password, roles }: SignUpAuthDto) {
-    const hashedPassword = await this.hashService.create(password);
+    const checkUser = await this.usersService.findByEmail(email);
 
+    if (checkUser !== null) {
+      throw new ConflictException('User with this email already registered.');
+    }
+
+    const hashedPassword = await this.hashService.create(password);
     const user = await this.usersService.create({
       fullName,
       email,
@@ -55,11 +64,10 @@ export class AuthenticationService {
 
     const expiresIn = '24h';
 
-    const accessToken = await this.jwt.signAsync(payload, {
+    const accessToken = await this.jwtService.signAsync(payload, {
       secret,
       expiresIn,
     });
-
     return accessToken;
   }
 }

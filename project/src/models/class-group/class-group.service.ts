@@ -67,7 +67,6 @@ export class ClassGroupService {
       where: { id },
       data,
     });
-    console.log(classGroup);
     return new ClassGroupEntity(classGroup);
   }
 

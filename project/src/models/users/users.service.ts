@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
@@ -17,7 +18,9 @@ export class UsersService {
       const user = await this.prisma.user.create({ data });
       return new UserEntity(user);
     } catch {
-      throw new ConflictException('User with this email already registered.');
+      throw new InternalServerErrorException(
+        'Something went wrong saving the user on the database.',
+      );
     }
   }
 
@@ -31,6 +34,7 @@ export class UsersService {
       const user = await this.prisma.user.findUnique({
         where: { id: uuid },
       });
+      console.log(user);
       return user ? new UserEntity(user) : null;
     } catch {
       throw new NotFoundException('No user in the database.');

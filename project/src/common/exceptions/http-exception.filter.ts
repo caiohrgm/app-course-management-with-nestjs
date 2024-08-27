@@ -22,7 +22,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       error,
       statusCode,
     };
-    console.log(cause['error']);
 
     if (cause instanceof Object && cause.hasOwnProperty('message')) {
       responseBody.message = cause['message'];
